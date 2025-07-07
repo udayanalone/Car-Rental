@@ -14,7 +14,6 @@ import ManageBooking from "./pages/owner/ManageBooking";
 import Login from "./components/Login";
 import { Toaster } from "react-hot-toast";
 import { useAppContext } from "./context/AppContext";
-
 const App = () => {
   const {showLogin}=useAppContext();
   const inOwner = useLocation().pathname.startsWith("/owner");
