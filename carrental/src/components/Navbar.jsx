@@ -1,11 +1,39 @@
 import React, { useState } from "react";
 import { assets, menuLinks } from "../assets/assets";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
+import { toast } from "react-hot-toast";
 
-const Navbar = ({setShowLogin}) => {
+const Navbar = () => {
+  const { setShowLogin, user, logout, isOwner, axios, setIsOwner } = useAppContext();
   const location = useLocation();
   const [open, setOpen] = useState(false);
-  const navigate =useNavigate();
+  const navigate = useNavigate();
+
+  const changeRole = async () => {
+    try {
+      const { data } = await axios.post('/api/owner/change-role');
+      if (data.success) {
+        setIsOwner(true);
+        toast.success('You are now an owner');
+        navigate('/owner/manage-cars');
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
+  };
+
+  // Handle navigation for List Cars / Become Owner
+  const handleListCarsOrDashboard = () => {
+    if (isOwner) {
+      navigate('/owner/manage-cars');
+    } else {
+      changeRole();
+    }
+    setOpen(false);
+  };
 
   return (
     <div
@@ -31,7 +59,7 @@ const Navbar = ({setShowLogin}) => {
       `}
       >
         {menuLinks.map((link, index) => (
-          <Link key={index} to={link.path}>
+          <Link key={index} to={link.path} onClick={() => setOpen(false)}>
             {link.name}
           </Link>
         ))}
@@ -46,16 +74,28 @@ const Navbar = ({setShowLogin}) => {
         </div>
 
         <div className="flex max-sm:flex-col items-start sm:items-center gap-6">
-          <button className="cursor-pointer" onClick={()=>navigate('/owner')}>Dashboard</button>
-          <button className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition-all text-white rounded-lg"
-            onClick={()=>setShowLogin(true)}
+          <button
+            className="cursor-pointer"
+            onClick={handleListCarsOrDashboard}
           >
-            Login
+            {isOwner ? "List Cars" : "Become Owner"}
+          </button>
+          <button
+            className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition-all text-white rounded-lg"
+            onClick={() => {
+              if (user) {
+                logout();
+              } else {
+                setShowLogin(true);
+              }
+              setOpen(false);
+            }}
+          >
+            {user ? user.name : "Login"}
           </button>
         </div>
-        <button onClick={()=>
-                setOpen(!open)}>
-            <img src={open?assets.close_icon:assets.menu_icon } alt="menu"/>
+        <button onClick={() => setOpen(!open)} className="lg:hidden">
+          <img src={open ? assets.close_icon : assets.menu_icon} alt="menu" />
         </button>
       </div>
     </div>

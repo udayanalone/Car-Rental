@@ -12,18 +12,21 @@ import AddCar from "./pages/owner/AddCar";
 import ManageCars from "./pages/owner/ManageCars";
 import ManageBooking from "./pages/owner/ManageBooking";
 import Login from "./components/Login";
+import { Toaster } from "react-hot-toast";
+import { useAppContext } from "./context/AppContext";
 
 const App = () => {
-  const [showLogin, setShowLogin] = useState(false);
+  const {showLogin}=useAppContext();
   const inOwner = useLocation().pathname.startsWith("/owner");
 
   return (
     <div
       style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
     >
-      {showLogin && <Login setShowLogin={setShowLogin} />}
+      <Toaster />
+      {showLogin && <Login  />}
 
-      {!inOwner && <Navbar setShowLogin={setShowLogin} />}
+      {!inOwner && <Navbar  />}
 
       <div style={{ flex: 1 }}>
         <Routes>

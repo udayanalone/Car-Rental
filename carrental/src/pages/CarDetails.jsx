@@ -7,7 +7,7 @@ const CarDetails = () => {
   const {id} =useParams()
   const naviagte=useNavigate();
   const [car,setCar]=useState(null);
-  const currency=import.meta.env.VITE_CURRANCY;
+  const currency = import.meta.env.VITE_CURRENCY;
   const handleSubmit=async (e)=>
   {
     e.preventDefault();

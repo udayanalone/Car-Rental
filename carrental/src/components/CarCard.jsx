@@ -1,25 +1,35 @@
 import React from "react";
 import { assets } from "../assets/assets";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CarCard = ({ car }) => {
-  const currency = import.meta.env.VITE_CURRANCY || "$";
-  const naviagte=useNavigate();
+  const currency = import.meta.env.VITE_CURRENCY || "$";
+  const navigate = useNavigate();
+
+  if (!car) return null;
 
   return (
-    <div  onClick={()=>{naviagte(`/car-details/${car._id}`);scrollTo(0,0)}}
-    className="bg-white rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-2 cursor-pointer">
+    <div
+      onClick={() => {
+        navigate(`/car-details/${car._id}`);
+        window.scrollTo(0, 0);
+      }}
+      className="bg-white rounded-2xl shadow-lg overflow-hidden transition-transform duration-300 hover:shadow-2xl hover:-translate-y-2 cursor-pointer"
+    >
       <div className="relative">
-        <img src={car.image} alt="car" className="w-full h-48 object-cover" />
-        {car.isAvaliable && (
+        <img
+          src={car.image}
+          alt={`${car.brand} ${car.model}`}
+          className="w-full h-48 object-cover"
+        />
+        {car.isAvailable && (
           <span className="absolute top-4 left-4 bg-blue-600 text-white text-xs font-semibold px-4 py-1 rounded-full shadow">
             Available Now
           </span>
         )}
         <span className="absolute bottom-4 right-4 bg-black bg-opacity-90 text-white text-lg font-semibold px-4 py-1 rounded-lg">
           {currency}
-          {car.pricePerDay}{" "}
-          <span className="text-sm font-normal">/ day</span>
+          {car.pricePerDay} <span className="text-sm font-normal">/ day</span>
         </span>
       </div>
       <div className="p-5">

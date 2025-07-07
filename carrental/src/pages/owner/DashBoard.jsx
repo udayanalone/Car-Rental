@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { dummyDashboardData, assets } from "../../assets/assets.js";
+import { assets } from "../../assets/assets.js";
 import Title from "../../components/owner/Title";
+import { useAppContext } from "../../context/AppContext";
+import { toast } from "react-hot-toast";
 
 const DashBoard = () => {
-  const currency = import.meta.env.VITE_CURRANCY;
+  const { isOwner, axios, currency } = useAppContext();
 
   const [data, setData] = useState({
     totalCars: 0,
@@ -33,9 +35,24 @@ const DashBoard = () => {
     },
   ];
 
+  const fetchDashboardData = async () => {
+    try {
+      const { data: res } = await axios.get('/api/owner/dashboard');
+      if (res.success) {
+        setData(res.stats || res.dashboardData || {});
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
+  };
+
   useEffect(() => {
-    setData(dummyDashboardData);
-  }, []);
+    if (isOwner) {
+      fetchDashboardData();
+    }
+  }, [isOwner]);
 
   return (
     <div className="px-4 pt-10 md:px-10 flex-1 bg-[#fafbfc] min-h-screen">

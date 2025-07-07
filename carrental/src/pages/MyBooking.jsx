@@ -1,22 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { dummyMyBookingsData, assets } from "../assets/assets";
+import { assets } from "../assets/assets";
 import Title from "../components/Title";
+import { useAppContext } from "../context/AppContext";
+import { toast } from "react-hot-toast";
+
 const MyBooking = () => {
   const [bookings, setBookings] = useState([]);
-  const currency=import.meta.env.VITE_CURRANCY;
-  const fetchMyBooking = () => {
-    setBookings(dummyMyBookingsData);
+  const { axios } = useAppContext();
+  const currency = import.meta.env.VITE_CURRENCY;
+
+  // Fetch bookings from backend
+  const fetchMyBooking = async () => {
+    try {
+      const { data } = await axios.get("/api/bookings/user");
+      if (data.success) {
+        setBookings(data.bookings);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
   };
 
   useEffect(() => {
     fetchMyBooking();
+    // eslint-disable-next-line
   }, []);
 
   return (
     <div className="px-6 md:px-16 lg:px-24 xl:px-32 2xl:px-48 mt-16 text-sm max-w-7xl">
       <Title
         title="My Bookings"
-        subTitle="View and manage your all car bookings"
+        subTitle="View and manage all your car bookings"
         align="left"
       />
 
@@ -36,7 +52,9 @@ const MyBooking = () => {
                 />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900">{booking.car.brand} {booking.car.model}</h3>
+                <h3 className="text-lg font-bold text-gray-900">
+                  {booking.car.brand} {booking.car.model}
+                </h3>
                 <p className="text-gray-500 text-sm">
                   {booking.car.year} &bull; {booking.car.category} &bull; {booking.car.location}
                 </p>
@@ -46,7 +64,9 @@ const MyBooking = () => {
             {/* Booking Info */}
             <div className="flex-1 flex flex-col justify-center">
               <div className="flex items-center gap-2 mb-2">
-                <span className="px-3 py-1.5 bg-light rounded text-sm">Booking #{index + 1}</span>
+                <span className="px-3 py-1.5 bg-light rounded text-sm">
+                  Booking #{index + 1}
+                </span>
                 <span
                   className={`px-3 py-1 text-xs rounded-full ${
                     booking.status === "confirmed"
@@ -78,9 +98,12 @@ const MyBooking = () => {
                 Total Price
               </p>
               <h1 className="text-2xl font-semibold text-primary leading-tight">
-                {currency}{booking.price}
+                {currency}
+                {booking.price}
               </h1>
-              <p className="text-xs text-gray-400 mt-1">Booked on {booking.createdAt.split("T")[0]}</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Booked on {booking.createdAt.split("T")[0]}
+              </p>
             </div>
           </div>
         ))}

@@ -3,13 +3,19 @@ import { assets, cityList } from "../../src/assets/assets";
 
 const Hero = () => {
   const [pickupLocation, setpickUpLocation] = useState("");
+  const {pickupDate,setPickupDate,navigate,returnDate,setReturnDate}=useAppContext();
 
+  const handleSearch=(e)=>{
+    e.preventDefault();
+    navigate(`/cars?pickupLocation=${pickupLocation}&pickupDate=${pickupDate}&returnDate=${returnDate}`);
+
+  }
   return (
     <div className="h-screen flex flex-col items-center justify-center gap-14 bg-light text-center">
       <h1 className="text-4xl md:text-5xl font-semibold">
         Luxury Cars on Rent
       </h1>
-      <form className="w-full flex justify-center">
+      <form onSubmit={handleSearch} className="w-full flex justify-center">
         <div className="bg-white rounded-full shadow-md flex items-center px-6 py-4 w-full max-w-4xl gap-6">
           <div className="flex flex-col items-start flex-1 min-w-[150px]">
             <label className="text-sm font-semibold mb-1">
@@ -34,6 +40,8 @@ const Hero = () => {
               Pick-up Date
             </label>
             <input
+            value={pickupDate}
+            onChange={(e)=>setPickupDate(e.target.value)}
               type="date"
               id="pickup-date"
               min={new Date().toISOString().split("T")[0]}
@@ -47,6 +55,8 @@ const Hero = () => {
               Return Date
             </label>
             <input
+              value={returnDate}
+              onChange={(e)=>setReturnDate(e.target.value)}
               type="date"
               id="return-date"
               className="text-base text-gray-500 w-full"
