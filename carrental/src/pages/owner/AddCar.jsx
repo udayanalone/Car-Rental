@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import Title from "../../components/owner/Title";
 import { assets } from "../../assets/assets.js";
 import { useAppContext } from "../../context/AppContext";
+import { toast } from "react-hot-toast";
+
 const AddCar = () => {
 
-  const {axois,currency}=useAppContext();
+  const { axios, currency } = useAppContext();
 
 
   // const currency = import.meta.env.VITE_CURRENCY;

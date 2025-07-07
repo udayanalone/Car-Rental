@@ -4,7 +4,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { ownerMenuLinks } from "../../assets/assets";
 import { useAppContext } from "../../context/AppContext";
 const SideBar = () => {
-  const {user,axios,fetchUser} = useAppContext;
+  const {user,axios,fetchUser} = useAppContext();
   const location = useLocation();
   const [image, setImage] = useState("");
 

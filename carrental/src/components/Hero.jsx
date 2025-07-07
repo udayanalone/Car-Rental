@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { assets, cityList } from "../../src/assets/assets";
+import { useAppContext } from "../context/AppContext";
 
 const Hero = () => {
   const [pickupLocation, setpickUpLocation] = useState("");
-  const {pickupDate,setPickupDate,navigate,returnDate,setReturnDate}=useAppContext();
+  const { pickupDate, setPickupDate, navigate, returnDate, setReturnDate } = useAppContext();
 
   const handleSearch=(e)=>{
     e.preventDefault();

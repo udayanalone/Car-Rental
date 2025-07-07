@@ -3,6 +3,7 @@ import Title from "./Title";
 import { assets, dummyCarData } from "../assets/assets";
 import CarCard from "./CarCard";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../context/AppContext";
 
 const FeatureSection = () => {
   const navigate = useNavigate();
