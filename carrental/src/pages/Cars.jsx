@@ -5,9 +5,10 @@ import CarCard from "../components/CarCard";
 import { useAppContext } from "../context/AppContext";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import Loader from "../components/Loader";
 
 const Cars = () => {
-  const { cars, axios } = useAppContext();
+  const { cars, axios, loading } = useAppContext();
   const [input, setInput] = useState("");
   const [filteredCars, setFilteredCars] = useState([]);
   const [searchParams] = useSearchParams();
@@ -70,6 +71,10 @@ const Cars = () => {
     // eslint-disable-next-line
   }, [input, cars]);
 
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div>
       <div className="flex flex-col items-center py-20 bg-white max-md:px-4">
@@ -91,14 +96,21 @@ const Cars = () => {
       </div>
 
       <div className="px-6 md:px-16 lg:px-24 xl:px-32 mt-10">
-        <p>Showing {filteredCars.length} Cars</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4 xl:px-20 max-w-7xl mx-auto">
-          {filteredCars.map((car, index) => (
-            <div className="" key={index}>
-              <CarCard car={car} />
-            </div>
-          ))}
-        </div>
+        <p className="text-gray-600 mb-4">Showing {filteredCars.length} Cars</p>
+        {filteredCars.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">No cars found matching your criteria</p>
+            <p className="text-gray-400 text-sm mt-2">Try adjusting your search terms</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-4 xl:px-20 max-w-7xl mx-auto">
+            {filteredCars.map((car, index) => (
+              <div key={car._id || index}>
+                <CarCard car={car} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

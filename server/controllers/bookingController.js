@@ -35,22 +35,50 @@ export const createBooking = async (req, res) => {
         const {_id} = req.user;
         const {car,pickupDate,returnDate} = req.body;
 
+        // Validate required fields
+        if (!car || !pickupDate || !returnDate) {
+            return res.json({success: false, message: "Car, pickup date, and return date are required"});
+        }
+
+        // Validate dates
+        const pickup = new Date(pickupDate);
+        const returnDateObj = new Date(returnDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (pickup < today) {
+            return res.json({success: false, message: "Pickup date cannot be in the past"});
+        }
+
+        if (returnDateObj <= pickup) {
+            return res.json({success: false, message: "Return date must be after pickup date"});
+        }
+
         const isAvailable = await isCarAvailable(car,pickupDate,returnDate);
 
         if(!isAvailable){
-            return res.json({success: false, message: "Car is not available"});
+            return res.json({success: false, message: "Car is not available for the selected dates"});
         }
 
         const carData = await Cars.findById(car);
+        
+        if (!carData) {
+            return res.json({success: false, message: "Car not found"});
+        }
 
-        const picked=new Date(pickupDate);
-        const returned=new Date(returnDate);
-        const noOfDays=Math.ceil((returned.getTime()-picked.getTime())/(1000*60*60*24));
-        const price=noOfDays*carData.pricePerDay;
+        const noOfDays=Math.ceil((returnDateObj.getTime()-pickup.getTime())/(1000*60*60*24));
+        const totalPrice=noOfDays*carData.pricePerDay;
 
-        await Booking.create({car,owner:carData.owner,user:_id,pickupDate,returnDate,price});
+        const booking = await Booking.create({
+            car,
+            owner: carData.owner,
+            user: _id,
+            pickupDate: pickup,
+            returnDate: returnDateObj,
+            totalPrice
+        });
 
-        res.json({success: true, message: "Booking created successfully"});
+        res.json({success: true, message: "Booking created successfully", booking});
     } catch (error) {
         console.log(error.message);
         res.json({success: false, message: error.message});

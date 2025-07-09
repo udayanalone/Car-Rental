@@ -6,6 +6,50 @@
   font-family: "Outfit", sans-serif;
 }
 
+/* Prevent layout shifts */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Prevent content jumping during loading */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Smooth transitions */
+* {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Prevent text selection during interactions */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Improve form stability */
+input, select, textarea {
+  box-sizing: border-box;
+}
+
+/* Prevent button text jumping */
+button {
+  white-space: nowrap;
+}
+
+/* Improve loading states */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 @theme {
   --color-primary: #2563EB;
   --color-primary-dull: #1f58d8;

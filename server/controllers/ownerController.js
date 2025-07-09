@@ -107,15 +107,23 @@ export const getOwnerCars = async (req, res) => {
 export const toggleCarAvailability = async (req, res) => {
     try {
         const { _id } = req.user;
-        const {carId} = req.body.carId;
+        const { carId } = req.params;
         const car = await Cars.findById(carId);
 
-        if(car.owner.toString() !== _id.toString()){
+        if (!car) {
+            return res.json({ success: false, message: "Car not found" });
+        }
+
+        if (car.owner.toString() !== _id.toString()) {
             return res.json({ success: false, message: "You are not authorized to toggle availability of this car" });
         }
+
         car.isAvailable = !car.isAvailable;
-        await car.save()
-        res.json({ success: true, message: "Car availability toggled" });
+        await car.save();
+
+        // Return updated cars list
+        const cars = await Cars.find({ owner: _id });
+        res.json({ success: true, message: "Car availability toggled", cars });
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
@@ -125,17 +133,22 @@ export const toggleCarAvailability = async (req, res) => {
 export const deleteCar = async (req, res) => {
     try {
         const { _id } = req.user;
-        const {carId} = req.body.carId;
+        const { carId } = req.params;
         const car = await Cars.findById(carId);
 
-        if(car.owner.toString() !== _id.toString()){
+        if (!car) {
+            return res.json({ success: false, message: "Car not found" });
+        }
+
+        if (car.owner.toString() !== _id.toString()) {
             return res.json({ success: false, message: "You are not authorized to delete this car" });
         }
 
-        car.owner = null;
-        car.isAvailable = false;
-        await car.save();
-        res.json({ success: true, message: "Car deleted successfully" });
+        await Cars.findByIdAndDelete(carId);
+        
+        // Return updated cars list
+        const cars = await Cars.find({ owner: _id });
+        res.json({ success: true, message: "Car deleted successfully", cars });
     } catch (error) {
         console.log(error.message);
         res.json({ success: false, message: error.message });
