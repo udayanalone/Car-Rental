@@ -64,8 +64,8 @@ A full-stack web application for seamless car rental booking and management. Use
    npm run dev
    ```
 
-6. **Visit the app:**
-   Open [http://localhost:5173](http://localhost:5173) in your browser.
+6. **Figma Design:**
+   [https://www.figma.com/design/U0v1IAFNfsId1WOiX4CpCD/Car-Rental-Figma?node-id=0-1&p=f&t=9mlCX3ZPbEO9HaJK-0]
 
 ## Folder Structure
 
